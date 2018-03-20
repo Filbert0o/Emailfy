@@ -24,21 +24,31 @@ passport.use(
       callbackURL: '/auth/google/callback',
       proxy: true
     },
-    (accessToken, refreshToken, profile, done) => {
-      // console.log('access token', accessToken);
-      // console.log('refresh token', refreshToken);
-      // console.log('profile ', profile);
-      User.findOne({ googleId: profile.id })
-        .then((exisitingUser) => {
-          if (exisitingUser) {
-            // we already have a record with the given profile ID
-            done(null, exisitingUser);
-          } else {
-            // we don't have a user record with this ID, make a new record
-            new User({ googleId: profile.id }).save()
-              .then(user => done(null, user));
-          }
-        })
+    async (accessToken, refreshToken, profile, done) => {
+      const exisitingUser = User.findOne({ googleId: profile.id })
+
+      if (exisitingUser) {
+        return done(null, exisitingUser);
+      }
+
+      const user =  new User({ googleId: profile.id }).save()
+      done(null, user)
     }
+    // (accessToken, refreshToken, profile, done) => {
+    //   // console.log('access token', accessToken);
+    //   // console.log('refresh token', refreshToken);
+    //   // console.log('profile ', profile);
+    //   User.findOne({ googleId: profile.id })
+    //     .then((exisitingUser) => {
+    //       if (exisitingUser) {
+    //         // we already have a record with the given profile ID
+    //         done(null, exisitingUser);
+    //       } else {
+    //         // we don't have a user record with this ID, make a new record
+    //         new User({ googleId: profile.id }).save()
+    //           .then(user => done(null, user));
+    //       }
+    //     })
+    // }
   )
 );
