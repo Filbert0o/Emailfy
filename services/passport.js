@@ -25,13 +25,13 @@ passport.use(
       proxy: true
     },
     async (accessToken, refreshToken, profile, done) => {
-      const exisitingUser = User.findOne({ googleId: profile.id })
+      const exisitingUser = await User.findOne({ googleId: profile.id })
 
       if (exisitingUser) {
         return done(null, exisitingUser);
       }
 
-      const user =  new User({ googleId: profile.id }).save()
+      const user = await new User({ googleId: profile.id }).save()
       done(null, user)
     }
     // (accessToken, refreshToken, profile, done) => {
@@ -52,3 +52,21 @@ passport.use(
     // }
   )
 );
+
+//
+// function fetchAlbums() {
+//   fetch('https://rallycoding.herokuapp.com/api/music_albums')
+//     .then(res => res.json())
+//     .then(json => console.log(json));
+// }
+//
+// fetchAlbums();
+//
+//
+// const fetchAlbums =  async () => {
+//   const res = await fetch('https://rallycoding.herokuapp.com/api/music_albums')
+//   const json = await res.json()
+//     .then(json => console.log(json));
+// }
+//
+// fetchAlbums();
